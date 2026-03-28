@@ -57,8 +57,10 @@
 .\docker-stop.ps1    
 # Просмотр логов    
 .\docker-logs.ps1  
-# Перезапуск (обычный) 
+# Перезапуск (обычный)
 .\docker-restart.ps1
+# Полная отчистка контейнеров 
+.\docker-clean.ps1
 
 # Запуск  Prisma Studio на http://localhost:5555
 docker exec -it trello-app npx prisma studio
