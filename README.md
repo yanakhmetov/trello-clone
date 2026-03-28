@@ -1,36 +1,76 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 📋 Trello Clone
 
-## Getting Started
+Современный клон Trello с Drag & Drop, темной темой и полным функционалом управления задачами. Построен на Next.js 16, Prisma 6 и PostgreSQL.
 
-First, run the development server:
 
-```bash
+**Тестовые данные:**
+- Email: `user@example.com`
+- Password: `password123`
+
+## ✨ Возможности
+
+- 🔐 **Аутентификация** — регистрация и вход пользователей (NextAuth.js)
+- 📊 **Управление досками** — создание, редактирование, удаление
+- 📝 **Колонки и задачи** — гибкая структура с подзадачами
+- 🎯 **Drag & Drop** — перетаскивание задач между колонками и внутри колонки
+- 🔄 **Перетаскивание колонок** — изменение порядка колонок
+- 🔍 **Поиск** — глобальный поиск по задачам и подзадачам
+- 🌓 **Тёмная тема** — автоматическое определение системных настроек и сохранение выбора
+- 📱 **Адаптивный дизайн** — работает на всех устройствах
+- 💾 **Автосохранение** — все изменения сохраняются в реальном времени
+- 🐳 **Docker поддержка** — готов к запуску в контейнерах
+
+## 🛠 Технологии
+
+### Frontend
+- **Next.js 16** — React фреймворк с App Router
+- **React 19** — современный React
+- **Tailwind CSS 4** — утилитарный CSS
+- **@dnd-kit** — мощная библиотека для Drag & Drop
+- **Lucide React** — иконки
+- **TanStack Query** — управление состоянием и кэширование
+
+### Backend
+- **Next.js API Routes** — REST API
+- **NextAuth.js** — аутентификация
+- **Prisma 6** — ORM
+- **PostgreSQL** — база данных
+- **bcryptjs** — хеширование паролей
+
+### DevOps
+- **Docker** — контейнеризация
+- **Docker Compose** — оркестрация
+
+## 📋 Требования
+
+- Node.js 20+
+- PostgreSQL 16+
+- Docker (опционально)
+
+## 🚀 Быстрый старт с Docker
+
+# Полная пересборка
+.\docker-rebuild.ps1  
+# Запуск   
+.\docker-start.ps1  
+# Остановка     
+.\docker-stop.ps1    
+# Просмотр логов    
+.\docker-logs.ps1  
+# Перезапуск (обычный) 
+.\docker-restart.ps1
+
+# Запуск  Prisma Studio на http://localhost:5555
+docker exec -it trello-app npx prisma studio
+
+### Локальная установка
+
+# Установка зависимостей  
+npm install
+# Запуск   
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
-
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
-
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+1. **Клонировать репозиторий**
+```bash
+git clone https://github.com/your-username/trello-clone.git
+cd trello-clone

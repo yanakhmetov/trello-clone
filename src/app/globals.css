@@ -1,8 +1,46 @@
+/* src/app/globals.css */
 @import "tailwindcss";
+
+@custom-variant dark (&:where(.dark, .dark *));
 
 :root {
   --background: #ffffff;
   --foreground: #171717;
+  --card-bg: #ffffff;
+  --card-border: #e5e7eb;
+  --sidebar-bg: #ffffff;
+  --header-bg: #ffffff;
+  --column-bg: #f3f4f6;
+  --task-bg: #ffffff;
+  --hover-bg: #f9fafb;
+  --primary: #3b82f6;
+  --primary-hover: #2563eb;
+  --secondary: #6b7280;
+  --danger: #ef4444;
+  --danger-hover: #dc2626;
+  --scrollbar-track: #f1f1f1;
+  --scrollbar-thumb: #c1c1c1;
+  --scrollbar-thumb-hover: #a8a8a8;
+}
+
+.dark {
+  --background: #0a0a0a;
+  --foreground: #ededed;
+  --card-bg: #1f1f1f;
+  --card-border: #2a2a2a;
+  --sidebar-bg: #1a1a1a;
+  --header-bg: #1a1a1a;
+  --column-bg: #2a2a2a;
+  --task-bg: #1f1f1f;
+  --hover-bg: #2a2a2a;
+  --primary: #3b82f6;
+  --primary-hover: #60a5fa;
+  --secondary: #9ca3af;
+  --danger: #ef4444;
+  --danger-hover: #f87171;
+  --scrollbar-track: #2a2a2a;
+  --scrollbar-thumb: #4a4a4a;
+  --scrollbar-thumb-hover: #5a5a5a;
 }
 
 @theme inline {
@@ -12,15 +50,388 @@
   --font-mono: var(--font-geist-mono);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
-
 body {
   background: var(--background);
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* ========== СТИЛИ СКРОЛЛА ========== */
+
+/* Для WebKit браузеров (Chrome, Safari, Edge) */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--scrollbar-track);
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--scrollbar-thumb);
+  border-radius: 10px;
+  transition: background 0.2s ease;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--scrollbar-thumb-hover);
+}
+
+/* Для Firefox */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--scrollbar-thumb) var(--scrollbar-track);
+}
+
+/* ========== ОСТАЛЬНЫЕ СТИЛИ ========== */
+
+/* Плавный скролл */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Улучшенные стили для скролла в колонках */
+.flex-1.overflow-y-auto {
+  scrollbar-width: thin;
+}
+
+.flex-1.overflow-y-auto::-webkit-scrollbar {
+  width: 4px;
+}
+
+.flex-1.overflow-y-auto::-webkit-scrollbar-track {
+  background: var(--scrollbar-track);
+  border-radius: 4px;
+}
+
+.flex-1.overflow-y-auto::-webkit-scrollbar-thumb {
+  background: var(--scrollbar-thumb);
+  border-radius: 4px;
+}
+
+/* Стили для скролла в модальных окнах */
+.modal-content {
+  scrollbar-width: thin;
+  scrollbar-color: var(--scrollbar-thumb) var(--scrollbar-track);
+}
+
+.modal-content::-webkit-scrollbar {
+  width: 6px;
+}
+
+.modal-content::-webkit-scrollbar-track {
+  background: var(--scrollbar-track);
+  border-radius: 10px;
+}
+
+.modal-content::-webkit-scrollbar-thumb {
+  background: var(--scrollbar-thumb);
+  border-radius: 10px;
+}
+
+.modal-content::-webkit-scrollbar-thumb:hover {
+  background: var(--scrollbar-thumb-hover);
+}
+
+/* Стили для списка подзадач */
+.max-h-\[300px\] {
+  scrollbar-width: thin;
+}
+
+.max-h-\[300px\]::-webkit-scrollbar {
+  width: 4px;
+}
+
+/* Стили для горизонтального скролла */
+.min-h-\[calc\(100vh-200px\)\] {
+  scrollbar-width: thin;
+}
+
+.min-h-\[calc\(100vh-200px\)\]::-webkit-scrollbar {
+  height: 6px;
+}
+
+.min-h-\[calc\(100vh-200px\)\]::-webkit-scrollbar-track {
+  background: var(--scrollbar-track);
+  border-radius: 10px;
+}
+
+.min-h-\[calc\(100vh-200px\)\]::-webkit-scrollbar-thumb {
+  background: var(--scrollbar-thumb);
+  border-radius: 10px;
+}
+
+/* Стили для поиска */
+.max-h-\[60vh\] {
+  scrollbar-width: thin;
+}
+
+.max-h-\[60vh\]::-webkit-scrollbar {
+  width: 6px;
+}
+
+/* ========== ТЕМНЫЕ СТИЛИ ДЛЯ КОМПОНЕНТОВ ========== */
+
+/* Используем Tailwind dark: классы вместо CSS переменных */
+.bg-white {
+  background-color: var(--card-bg);
+}
+
+.bg-gray-50 {
+  background-color: var(--background);
+}
+
+.bg-gray-100 {
+  background-color: var(--column-bg);
+}
+
+.border-gray-200 {
+  border-color: var(--card-border);
+}
+
+.text-gray-800 {
+  color: var(--foreground);
+}
+
+.text-gray-600,
+.text-gray-500 {
+  color: var(--secondary);
+}
+
+.text-gray-700 {
+  color: var(--foreground);
+}
+
+.hover\:bg-gray-100:hover {
+  background-color: var(--hover-bg);
+}
+
+.hover\:bg-gray-50:hover {
+  background-color: var(--hover-bg);
+}
+
+/* Стили для инпутов в темной теме - через dark: классы */
+.dark input,
+.dark textarea,
+.dark select {
+  background-color: #2a2a2a;
+  border-color: #3a3a3a;
+  color: #ededed;
+}
+
+.dark input:focus,
+.dark textarea:focus,
+.dark select:focus {
+  border-color: #3b82f6;
+  outline: none;
+}
+
+/* Анимация переключения темы */
+* {
+  transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+}
+
+/* Горизонтальный скролл для канбан-доски */
+.horizontal-scroll {
+  overflow-x: auto;
+  overflow-y: hidden;
+  scroll-behavior: smooth;
+  cursor: grab;
+  scrollbar-width: thin;
+}
+
+.horizontal-scroll:active {
+  cursor: grabbing;
+}
+
+.horizontal-scroll::-webkit-scrollbar {
+  height: 8px;
+}
+
+.horizontal-scroll::-webkit-scrollbar-track {
+  background: var(--scrollbar-track);
+  border-radius: 10px;
+}
+
+.horizontal-scroll::-webkit-scrollbar-thumb {
+  background: var(--scrollbar-thumb);
+  border-radius: 10px;
+  transition: background 0.2s ease;
+}
+
+.horizontal-scroll::-webkit-scrollbar-thumb:hover {
+  background: var(--scrollbar-thumb-hover);
+}
+
+/* Отключаем вертикальный скролл на всей странице доски */
+.board-container {
+  height: 100vh;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.board-content {
+  flex: 1;
+  overflow: hidden;
+  position: relative;
+}
+
+/* Прокрутка колесиком мыши для горизонтального скролла */
+.horizontal-scroll {
+  scroll-snap-type: x proximity;
+}
+
+/* Стили для колонок */
+.column-container {
+  flex-shrink: 0;
+  width: 320px;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  background: var(--column-bg);
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+/* Список задач внутри колонки */
+.tasks-list {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.tasks-list::-webkit-scrollbar {
+  width: 4px;
+}
+
+.tasks-list::-webkit-scrollbar-track {
+  background: var(--scrollbar-track);
+  border-radius: 4px;
+}
+
+.tasks-list::-webkit-scrollbar-thumb {
+  background: var(--scrollbar-thumb);
+  border-radius: 4px;
+}
+
+/* Отключаем вертикальный скролл на странице */
+html, body {
+  overflow: hidden;
+  height: 100vh;
+}
+
+/* Восстанавливаем скролл для модальных окон */
+.modal-open {
+  overflow: hidden;
+}
+
+.modal-content {
+  overflow-y: auto;
+}
+/* Улучшенные стили для Drag & Drop */
+.dnd-active {
+  cursor: grabbing !important;
+}
+
+/* Анимация для перетаскиваемых элементов */
+.dragging {
+  cursor: grabbing !important;
+  opacity: 0.8;
+  transform: rotate(2deg) scale(1.02);
+  transition: transform 0.1s ease;
+}
+
+/* Увеличиваем z-index для DragOverlay */
+[data-dnd-overlay] {
+  z-index: 9999 !important;
+}
+
+/* Стили для перетаскивания колонок */
+.sortable-column-dragging {
+  opacity: 0.5;
+  cursor: grabbing;
+  z-index: 1000;
+}
+
+/* Стили для перетаскивания задач */
+.sortable-task-dragging {
+  opacity: 0.5;
+  cursor: grabbing;
+  transform: rotate(2deg);
+  z-index: 1000;
+}
+/* Обеспечиваем, чтобы контейнер имел горизонтальную прокрутку */
+.horizontal-scroll {
+  overflow-x: auto !important;
+  overflow-y: hidden !important;
+  scrollbar-width: thin;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Убеждаемся, что внутренний контент шире контейнера */
+.horizontal-scroll > div {
+  display: flex;
+  width: fit-content;
+  min-width: 100%;
+}
+
+/* Стили для скроллбара */
+.horizontal-scroll::-webkit-scrollbar {
+  height: 8px;
+}
+
+.horizontal-scroll::-webkit-scrollbar-track {
+  background: var(--scrollbar-track);
+  border-radius: 10px;
+}
+
+.horizontal-scroll::-webkit-scrollbar-thumb {
+  background: var(--scrollbar-thumb);
+  border-radius: 10px;
+}
+
+.horizontal-scroll::-webkit-scrollbar-thumb:hover {
+  background: var(--scrollbar-thumb-hover);
+}
+/* Фиксированная высота для колонок */
+.column-container {
+  height: calc(100vh - 200px);
+  max-height: calc(100vh - 200px);
+  display: flex;
+  flex-direction: column;
+}
+
+/* Вертикальный скролл внутри колонки */
+.column-tasks-list {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  min-height: 0; /* Важно для корректной работы flex */
+}
+
+/* Стили для скролла */
+.column-tasks-list::-webkit-scrollbar {
+  width: 4px;
+}
+
+.column-tasks-list::-webkit-scrollbar-track {
+  background: var(--scrollbar-track);
+  border-radius: 4px;
+}
+
+.column-tasks-list::-webkit-scrollbar-thumb {
+  background: var(--scrollbar-thumb);
+  border-radius: 4px;
+}
+
+.column-tasks-list::-webkit-scrollbar-thumb:hover {
+  background: var(--scrollbar-thumb-hover);
 }
