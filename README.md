@@ -74,5 +74,5 @@ npm run dev
 
 1. **Клонировать репозиторий**
 ```bash
-git clone https://github.com/your-username/trello-clone.git
+git clone https://github.com/yanakhmetov/trello-clone.git
 cd trello-clone
