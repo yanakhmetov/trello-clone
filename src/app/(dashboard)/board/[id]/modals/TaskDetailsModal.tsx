@@ -246,7 +246,7 @@ export function TaskDetailsModal({
 
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-      <div className="bg-white dark:bg-gray-900 rounded-lg w-full max-w-lg h-[550px] flex flex-col">
+      <div className="bg-white dark:bg-gray-900 rounded-lg w-full max-w-lg h-[90vh] flex flex-col">
         {/* Заголовок - фиксированный */}
         <div className="flex justify-between items-center p-4 border-b border-gray-200 dark:border-gray-700 sticky top-0 bg-white dark:bg-gray-900 z-10 flex-shrink-0">
           <div className="flex-1">

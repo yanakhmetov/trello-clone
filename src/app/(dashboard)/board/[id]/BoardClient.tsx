@@ -346,88 +346,190 @@ export function BoardClient({ board: initialBoard, openTaskId: initialOpenTaskId
   }, [])
 
   return (
-    <div className="h-full">
-      <div className="mb-6">
-        <h1 className="text-3xl font-bold text-gray-800 dark:text-white">{board.title}</h1>
-        {board.description && (
-          <p className="text-gray-600 dark:text-gray-400 mt-1">{board.description}</p>
-        )}
+    <div className="h-full flex flex-col">
+      {/* Заголовок доски и кнопка */}
+      <div className="p-6">
+        <div className="flex items-center justify-between">
+          <div>
+            <h1 className="text-3xl font-bold text-gray-800 dark:text-white">{board.title}</h1>
+            {board.description && (
+              <p className="text-gray-600 dark:text-gray-400 mt-1">{board.description}</p>
+            )}
+          </div>
+          <button
+            onClick={() => setIsCreateColumnModalOpen(true)}
+            className="flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors"
+          >
+            <Plus className="w-5 h-5" />
+            <span>Добавить колонку</span>
+          </button>
+        </div>
       </div>
 
-      <NoSSR fallback={
-        <div className="flex gap-6 overflow-x-auto pb-8">
-          {board.columns.map((column: ColumnType) => (
-            <div key={column.id} className="flex-shrink-0 w-80 bg-gray-100 dark:bg-gray-800 rounded-lg p-4">
-              <div className="font-semibold dark:text-gray-300">{column.title}</div>
-              <div className="text-sm text-gray-500 dark:text-gray-400 mt-2">Загрузка...</div>
-            </div>
-          ))}
-        </div>
-      }>
-        <DndContext
-          sensors={sensors}
-          collisionDetection={closestCorners}
-          onDragStart={handleDragStart}
-          onDragEnd={handleDragEnd}
-        >
-          <div className="flex gap-6 overflow-x-auto pb-8 min-h-[calc(100vh-200px)]">
-            <SortableContext
-              items={board.columns.map(col => col.id)}
-              strategy={verticalListSortingStrategy}
-            >
-              {board.columns.map((column: ColumnType) => (
-                <SortableColumn
-                  key={column.id}
-                  column={column}
-                  onCreateTask={() => handleCreateTask(column.id)}
-                  onTaskClick={handleTaskClick}
-                  onColumnUpdate={handleColumnUpdate}
-                />
-              ))}
-            </SortableContext>
+      {/* Контейнер для колонок с разным поведением на разных размерах */}
+      <div className="flex-1 px-8 pb-8">
 
-            <button
-              onClick={() => setIsCreateColumnModalOpen(true)}
-              className="flex-shrink-0 w-80 h-fit bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 rounded-lg p-4 text-gray-600 dark:text-gray-400 transition-colors"
-            >
-              <div className="flex items-center gap-2">
-                <Plus className="w-5 h-5" />
-                <span>Добавить колонку</span>
+        <NoSSR fallback={
+          <div className="md:flex md:gap-6 lg:overflow-x-auto md:pb-8 md:h-full hidden">
+            {board.columns.map((column: ColumnType) => (
+              <div key={column.id} className="flex-shrink-0 w-80 bg-gray-100 dark:bg-gray-800 rounded-lg p-4">
+                <div className="font-semibold dark:text-gray-300">{column.title}</div>
+                <div className="text-sm text-gray-500 dark:text-gray-400 mt-2">Загрузка...</div>
               </div>
-            </button>
+            ))}
           </div>
+        }>
+          <DndContext
+            sensors={sensors}
+            collisionDetection={closestCorners}
+            onDragStart={handleDragStart}
+            onDragEnd={handleDragEnd}
+          >
+            {/* Для экранов 1024px и выше (lg) - горизонтальный скролл */}
+            <div 
+              className="hidden lg:flex lg:gap-6 lg:overflow-x-auto lg:pb-6 lg:h-[calc(100vh-12rem)]
+                " 
+              id="columns-container"
+              onWheel={(e) => {
+                // Проверяем, находится ли курсор над полосой прокрутки
+                const container = e.currentTarget;
+                const rect = container.getBoundingClientRect();
+                const scrollbarWidth = 16; // Примерная ширина полосы прокрутки
+                const isOverScrollbar = 
+                  e.clientX > rect.right - scrollbarWidth || 
+                  e.clientY > rect.bottom - scrollbarWidth;
+                
+                if (isOverScrollbar && e.deltaY !== 0) {
+                  // Для горизонтального скролла на больших экранах
+                  if (window.innerWidth >= 1024) {
+                    container.scrollLeft += e.deltaY;
+                    e.preventDefault();
+                  }
+                }
+              }}
+            >
+              <SortableContext
+                items={board.columns.map(col => col.id)}
+                strategy={verticalListSortingStrategy}
+              >
+                {board.columns.map((column: ColumnType) => (
+                  <SortableColumn
+                    key={column.id}
+                    column={column}
+                    onCreateTask={() => handleCreateTask(column.id)}
+                    onTaskClick={handleTaskClick}
+                    onColumnUpdate={handleColumnUpdate}
+                  />
+                ))}
+              </SortableContext>
+            </div>
 
-          <DragOverlay>
-            {activeTask && (
-              <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-4 w-72 border-2 border-blue-500">
-                <h3 className="font-medium text-gray-800 dark:text-white">{activeTask.title}</h3>
-                {activeTask.description && (
-                  <p className="text-sm text-gray-500 dark:text-gray-400 mt-1 line-clamp-2">
-                    {activeTask.description}
-                  </p>
-                )}
-                {activeTask.subtasks.length > 0 && (
-                  <div className="text-xs text-gray-400 dark:text-gray-500 mt-2">
-                    {activeTask.subtasks.filter(s => s.isDone).length}/
-                    {activeTask.subtasks.length} подзадач
+            {/* Для экранов 768px-1023px (md) - вертикальный скролл */}
+            <div className="hidden md:block lg:hidden">
+              <div className="space-y-6 pb-8">
+                {board.columns.map((column: ColumnType) => (
+                  <div key={column.id} className="bg-gray-100 dark:bg-gray-800 rounded-lg p-4">
+                    <div className="font-semibold dark:text-gray-300 mb-4">{column.title}</div>
+                    <div className="space-y-3">
+                      {column.tasks.map((task: Task) => (
+                        <div 
+                          key={task.id}
+                          className="bg-white dark:bg-gray-700 rounded-lg p-3 cursor-pointer hover:shadow-md transition-shadow"
+                          onClick={() => handleTaskClick(task)}
+                        >
+                          <div className="font-medium text-gray-800 dark:text-white">{task.title}</div>
+                          {task.description && (
+                            <div className="text-sm text-gray-500 dark:text-gray-400 mt-1 line-clamp-2">
+                              {task.description}
+                            </div>
+                          )}
+                          {task.subtasks.length > 0 && (
+                            <div className="text-xs text-gray-400 dark:text-gray-500 mt-2">
+                              {task.subtasks.filter(s => s.isDone).length}/{task.subtasks.length} подзадач
+                            </div>
+                          )}
+                        </div>
+                      ))}
+                    </div>
+                    <button
+                      onClick={() => handleCreateTask(column.id)}
+                      className="w-full mt-4 py-2 text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 border border-dashed border-gray-300 dark:border-gray-600 rounded-lg hover:border-gray-400 dark:hover:border-gray-500 transition-colors"
+                    >
+                      + Добавить задачу
+                    </button>
                   </div>
-                )}
+                ))}
               </div>
-            )}
-            {activeColumn && (
-              <div className="flex-shrink-0 w-80 bg-gray-100 dark:bg-gray-800 rounded-lg shadow-lg border-2 border-blue-500 p-3">
-                <div className="flex items-center gap-2">
-                  <GripVertical className="w-4 h-4 text-gray-400" />
-                  <h3 className="font-semibold text-gray-700 dark:text-gray-300">{activeColumn.title}</h3>
-                  <span className="text-sm text-gray-500 dark:text-gray-400 bg-gray-200 dark:bg-gray-700 px-2 py-0.5 rounded-full">
-                    {activeColumn.tasks.length}
-                  </span>
+            </div>
+
+            {/* Для экранов меньше 768px - вертикальная верстка без скролла */}
+            <div className="md:hidden space-y-6 pb-8">
+              {board.columns.map((column: ColumnType) => (
+                <div key={column.id} className="bg-gray-100 dark:bg-gray-800 rounded-lg p-4">
+                  <div className="font-semibold dark:text-gray-300 mb-4">{column.title}</div>
+                  <div className="space-y-3">
+                    {column.tasks.map((task: Task) => (
+                      <div 
+                        key={task.id}
+                        className="bg-white dark:bg-gray-700 rounded-lg p-3 cursor-pointer hover:shadow-md transition-shadow"
+                        onClick={() => handleTaskClick(task)}
+                      >
+                        <div className="font-medium text-gray-800 dark:text-white">{task.title}</div>
+                        {task.description && (
+                          <div className="text-sm text-gray-500 dark:text-gray-400 mt-1 line-clamp-2">
+                            {task.description}
+                          </div>
+                        )}
+                        {task.subtasks.length > 0 && (
+                          <div className="text-xs text-gray-400 dark:text-gray-500 mt-2">
+                            {task.subtasks.filter(s => s.isDone).length}/{task.subtasks.length} подзадач
+                          </div>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                  <button
+                    onClick={() => handleCreateTask(column.id)}
+                    className="w-full mt-4 py-2 text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 border border-dashed border-gray-300 dark:border-gray-600 rounded-lg hover:border-gray-400 dark:hover:border-gray-500 transition-colors"
+                  >
+                    + Добавить задачу
+                  </button>
                 </div>
-              </div>
-            )}
-          </DragOverlay>
-        </DndContext>
-      </NoSSR>
+              ))}
+            </div>
+
+            <DragOverlay>
+              {activeTask && (
+                <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-4 w-72 border-2 border-blue-500">
+                  <h3 className="font-medium text-gray-800 dark:text-white">{activeTask.title}</h3>
+                  {activeTask.description && (
+                    <p className="text-sm text-gray-500 dark:text-gray-400 mt-1 line-clamp-2">
+                      {activeTask.description}
+                    </p>
+                  )}
+                  {activeTask.subtasks.length > 0 && (
+                    <div className="text-xs text-gray-400 dark:text-gray-500 mt-2">
+                      {activeTask.subtasks.filter(s => s.isDone).length}/
+                      {activeTask.subtasks.length} подзадач
+                    </div>
+                  )}
+                </div>
+              )}
+              {activeColumn && (
+                <div className="flex-shrink-0 w-80 bg-gray-100 dark:bg-gray-800 rounded-lg shadow-lg border-2 border-blue-500 p-3">
+                  <div className="flex items-center gap-2">
+                    <GripVertical className="w-4 h-4 text-gray-400" />
+                    <h3 className="font-semibold text-gray-700 dark:text-gray-300">{activeColumn.title}</h3>
+                    <span className="text-sm text-gray-500 dark:text-gray-400 bg-gray-200 dark:bg-gray-700 px-2 py-0.5 rounded-full">
+                      {activeColumn.tasks.length}
+                    </span>
+                  </div>
+                </div>
+              )}
+            </DragOverlay>
+          </DndContext>
+        </NoSSR>
+      </div>
 
       <CreateTaskModal
         isOpen={isCreateModalOpen}

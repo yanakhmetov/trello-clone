@@ -6,6 +6,7 @@ import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
 import { Layout, Search } from 'lucide-react'
 import { SearchModal } from './SearchModal'
+import { useSidebar } from '@/context/SidebarContext'
 
 export function Sidebar() {
   const pathname = usePathname()
@@ -13,6 +14,7 @@ export function Sidebar() {
   const [isSearchModalOpen, setIsSearchModalOpen] = useState(false)
   const [pendingTaskId, setPendingTaskId] = useState<string | null>(null)
   const [pendingBoardId, setPendingBoardId] = useState<string | null>(null)
+  const { isSidebarOpen } = useSidebar()
 
   const handleTaskClick = (taskId: string, boardId: string) => {
     setPendingTaskId(taskId)
@@ -22,7 +24,13 @@ export function Sidebar() {
 
   return (
     <>
-      <aside className="fixed left-0 top-16 bottom-0 w-64 bg-white dark:bg-[#1a1a1a] border-r border-gray-200 dark:border-gray-800">
+      <aside 
+        className={`fixed left-0 top-16 bottom-0 w-64 bg-white dark:bg-[#1a1a1a] border-r border-gray-200 dark:border-gray-800 transition-all duration-300 ease-in-out z-40 ${
+          isSidebarOpen 
+            ? 'translate-x-0 opacity-100' 
+            : '-translate-x-full opacity-0 pointer-events-none'
+        }`}
+      >
         <div className="p-4">
           <button
             onClick={() => setIsSearchModalOpen(true)}

@@ -1,27 +1,46 @@
 // src/app/(dashboard)/layout.tsx
-import { redirect } from 'next/navigation'
-import { auth } from '@/lib/auth'
+'use client'
+
 import { Header } from '@/components/dashboard/Header'
 import { Sidebar } from '@/components/dashboard/Sidebar'
+import { useSidebar } from '@/context/SidebarContext'
+import { useSession } from 'next-auth/react'
+import { redirect } from 'next/navigation'
 
-export default async function DashboardLayout({
+export default function DashboardLayout({
   children
 }: {
   children: React.ReactNode
 }) {
-  const session = await auth()
+  const { data: session, status } = useSession()
+  const { isSidebarOpen } = useSidebar()
+
+  if (status === 'loading') {
+    return (
+      <div className="h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-gray-500">Загрузка...</div>
+      </div>
+    )
+  }
 
   if (!session?.user) {
     redirect('/login')
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="bg-gray-50 flex flex-col h-screen">
       <Header user={session.user} />
-      <Sidebar />
-      <main className="lg:ml-64 pt-16">
-        <div className="p-8">{children}</div>
-      </main>
+      <div className="flex flex-1 overflow-hidden h-dvh">
+        <Sidebar />
+        <main 
+          className={`pt-16 flex-1 overflow-hidden transition-all duration-300 ease-in-out
+             ${
+            isSidebarOpen ? 'md:ml-64 ' : 'md:ml-0'
+          }`}
+        >
+          <div className="md:h-[100%]  lg:overflow-hidden md:overflow-y-auto">{children}</div>
+        </main>
+      </div>
     </div>
   )
 }
