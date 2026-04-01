@@ -17,3 +17,10 @@ export function formatDate(date: Date): string {
 export function generateId(): string {
   return Math.random().toString(36).substr(2, 9)
 }
+
+export function safeSpread<T extends object>(obj: T | null | undefined): T {
+  if (!obj || typeof obj !== 'object') {
+    throw new Error('Cannot spread non-object');
+  }
+  return obj as T;
+}

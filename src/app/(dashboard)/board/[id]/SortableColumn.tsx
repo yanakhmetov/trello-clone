@@ -14,13 +14,19 @@ interface SortableColumnProps {
   onCreateTask: () => void
   onTaskClick: (task: Task) => void
   onColumnUpdate?: () => void
+  columns?: ColumnType[]
+  boardId?: string
+  onTaskMoved?: (taskId: string, newColumnId: string) => void
 }
 
 export function SortableColumn({ 
   column, 
   onCreateTask, 
   onTaskClick, 
-  onColumnUpdate 
+  onColumnUpdate,
+  columns,
+  boardId,
+  onTaskMoved 
 }: SortableColumnProps) {
   const [showMenu, setShowMenu] = useState(false)
   const [isEditing, setIsEditing] = useState(false)
@@ -48,7 +54,7 @@ export function SortableColumn({
   }
 
   const completedSubtasks = (task: Task) => {
-    return task.subtasks.filter(s => s.isDone).length
+    return task.subtasks.filter((s: { isDone: boolean }) => s.isDone).length
   }
 
   const handleEditSubmit = async (e: React.FormEvent) => {
@@ -90,6 +96,9 @@ export function SortableColumn({
       console.error('Ошибка при удалении колонки:', error)
     }
   }
+
+  // Создаем массив ID задач для SortableContext
+  const taskIds = column.tasks.map((task: Task) => task.id)
 
   return (
     <div
@@ -177,15 +186,18 @@ export function SortableColumn({
 
       <div className="flex-1 overflow-y-auto p-2 space-y-2">
         <SortableContext
-          items={column.tasks.map(task => task.id)}
+          items={taskIds}
           strategy={verticalListSortingStrategy}
         >
-          {column.tasks.map((task) => (
+          {column.tasks.map((task: Task) => (
             <SortableTask
               key={task.id}
               task={task}
               onClick={() => onTaskClick(task)}
               completedSubtasks={completedSubtasks(task)}
+              columns={columns}
+              boardId={boardId}
+              onTaskMoved={onTaskMoved}
             />
           ))}
         </SortableContext>

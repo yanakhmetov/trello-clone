@@ -71,6 +71,8 @@ docker exec -it trello-app npx prisma studio
 npm install
 # Запуск   
 npm run dev
+# Пересборка призмы
+npx prisma migrate reset
 
 1. **Клонировать репозиторий**
 ```bash

@@ -23,7 +23,7 @@ export function TaskDetailsModal({
   const [isEditing, setIsEditing] = useState(false)
   const [title, setTitle] = useState(task.title)
   const [description, setDescription] = useState(task.description || '')
-  const [subtasks, setSubtasks] = useState<Subtask[]>(task.subtasks)
+  const [subtasks, setSubtasks] = useState<Subtask[]>(task.subtasks || [])
   const [loading, setLoading] = useState(false)
   const [editingSubtaskId, setEditingSubtaskId] = useState<string | null>(null)
   const [editingSubtaskTitle, setEditingSubtaskTitle] = useState('')
@@ -47,14 +47,14 @@ export function TaskDetailsModal({
 
   // Синхронизируем подзадачи при изменении task извне
   useEffect(() => {
-    setSubtasks(task.subtasks)
+    setSubtasks(task.subtasks || [])
   }, [task.subtasks])
 
   const updateParentTask = (updatedSubtasks: Subtask[]) => {
-    const updatedTask = {
+    const updatedTask: Task = {
       ...task,
       title,
-      description,
+      description: description || null,
       subtasks: updatedSubtasks,
     }
     onUpdate(updatedTask)
@@ -136,7 +136,7 @@ export function TaskDetailsModal({
       if (!response.ok) throw new Error('Failed to delete subtask')
     } catch (error) {
       console.error('Error deleting subtask:', error)
-      const deletedSubtask = task.subtasks.find(s => s.id === subtaskId)
+      const deletedSubtask = task.subtasks?.find(s => s.id === subtaskId)
       if (deletedSubtask) {
         const restoredSubtasks = [...updatedSubtasks, deletedSubtask]
         setSubtasks(restoredSubtasks)
@@ -211,7 +211,12 @@ export function TaskDetailsModal({
       if (!response.ok) throw new Error('Failed to update task')
 
       const updatedTask = await response.json()
-      onUpdate({ ...task, title, description, subtasks })
+      onUpdate({ 
+        ...task, 
+        title, 
+        description: description || null, 
+        subtasks: subtasks || [] 
+      })
       setIsEditing(false)
     } catch (error) {
       console.error('Error updating task:', error)
@@ -246,7 +251,7 @@ export function TaskDetailsModal({
 
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-      <div className="bg-white dark:bg-gray-900 rounded-lg w-full max-w-lg h-[90vh] flex flex-col">
+      <div className="bg-white dark:bg-gray-900 rounded-lg w-full max-w-lg h-[90vh] flex flex-col ml-2 mr-2 sm:ml-0 sm:mr-0">
         {/* Заголовок - фиксированный */}
         <div className="flex justify-between items-center p-4 border-b border-gray-200 dark:border-gray-700 sticky top-0 bg-white dark:bg-gray-900 z-10 flex-shrink-0">
           <div className="flex-1">
@@ -435,16 +440,16 @@ export function TaskDetailsModal({
         )}
 
         {/* Кнопки - фиксированные внизу */}
-        <div className="flex justify-between gap-3 p-4 border-t border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 flex-shrink-0">
+        <div className="flex flex-col xs:flex-row justify-between gap-3 p-4 border-t border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 flex-shrink-0">
           <button
             onClick={handleDelete}
             disabled={loading}
-            className="flex items-center gap-2 px-4 py-2 text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition"
+            className="flex justify-center items-center gap-2 px-4 py-2 text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition"
           >
             <Trash2 className="w-4 h-4" />
             Удалить
           </button>
-          <div className="flex gap-3">
+          <div className="flex flex-col xs:flex-row gap-3">
             {isEditing ? (
               <>
                 <button
@@ -462,7 +467,7 @@ export function TaskDetailsModal({
                 <button
                   onClick={handleSave}
                   disabled={loading}
-                  className="flex items-center gap-2 px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 disabled:opacity-50 transition"
+                  className="flex justify-center items-center gap-2 px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 disabled:opacity-50 transition"
                 >
                   <Save className="w-4 h-4" />
                   Сохранить
@@ -472,7 +477,7 @@ export function TaskDetailsModal({
               <>
                 <button
                   onClick={() => setIsEditing(true)}
-                  className="flex items-center gap-2 px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition"
+                  className="flex justify-center items-center gap-2 px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition"
                 >
                   <Edit2 className="w-4 h-4" />
                   Редактировать

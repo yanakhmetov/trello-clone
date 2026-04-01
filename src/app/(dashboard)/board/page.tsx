@@ -124,15 +124,15 @@ export default function BoardsPage() {
   }
 
   return (
-    <div className="md:ml-8 md:mr-8" >
-      <div className="flex justify-between items-center mb-8 mt-8">
-        <h1 className="text-3xl font-bold text-gray-800">Мои доски</h1>
+    <div className="ml-8 mr-8" >
+      <div className="flex justify-between items-center mb-4 mt-4 xs:mb-6 xs:mt-6 md:mb-8 md:mt-8">
+        <h1 className="text-md xs:text-2xl sm:text-3xl font-bold text-gray-800">Мои доски</h1>
         <button
           onClick={() => setIsModalOpen(true)}
-          className="flex items-center space-x-2 px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition"
+          className="flex items-center space-x-1 px-2 py-1 xs:space-x-2 xs:px-4 xs:py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition"
         >
-          <Plus className="w-4 h-4" />
-          <span>Создать доску</span>
+          <Plus className="w-2 h-2 xs:w-4 xs:h-4" />
+          <span className="text-sm xs:text-md ">Создать доску</span>
         </button>
       </div>
 
@@ -147,7 +147,7 @@ export default function BoardsPage() {
           </button>
         </div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-8 xl:grid-cols-3">
+        <div className=" grid grid-cols-1 gap-3 xs:gap-8  md:grid-cols-2 lg:grid-cols-2  xl:grid-cols-3">
           {boards.map((board) => (
             <div
               key={board.id}

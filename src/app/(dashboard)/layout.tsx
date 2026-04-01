@@ -38,7 +38,7 @@ export default function DashboardLayout({
             isSidebarOpen ? 'md:ml-64 ' : 'md:ml-0'
           }`}
         >
-          <div className="md:h-[100%]  lg:overflow-hidden md:overflow-y-auto">{children}</div>
+          <div className="h-screen pb-6 overflow-y-auto ">{children}</div>
         </main>
       </div>
     </div>

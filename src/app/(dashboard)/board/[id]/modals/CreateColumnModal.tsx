@@ -61,7 +61,7 @@ export function CreateColumnModal({
   }
 
   return (
-    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 ml-3 mr-3 xs:ml-0 xs:mr-0">
       <div className="bg-white rounded-lg w-full max-w-md">
         <div className="flex justify-between items-center p-4 border-b">
           <h2 className="text-xl font-semibold">Создать колонку</h2>

@@ -5,26 +5,26 @@ import bcrypt from 'bcryptjs'
 const prisma = new PrismaClient()
 
 async function main() {
-  console.log('🌱 Seeding database...')
+  console.log('Seeding database...')
   
   try {
     // Проверяем подключение
     await prisma.$connect()
-    console.log('✅ Connected to database')
+    console.log('Connected to database')
     
     // Очищаем все таблицы в правильном порядке (из-за связей)
-    console.log('🗑️  Cleaning existing data...')
+    console.log('Cleaning existing data...')
     await prisma.subtask.deleteMany({})
     await prisma.task.deleteMany({})
     await prisma.column.deleteMany({})
     await prisma.board.deleteMany({})
     await prisma.user.deleteMany({})
-    console.log('✅ Cleaned existing data')
+    console.log('Cleaned existing data')
     
     const hashedPassword = await bcrypt.hash('password123', 10)
     
     // Создаем тестового пользователя
-    console.log('👤 Creating test user...')
+    console.log('Creating test user...')
     const user = await prisma.user.create({
       data: {
         email: 'user@example.com',
@@ -33,10 +33,10 @@ async function main() {
       }
     })
     
-    console.log(`✅ Created user: ${user.email} (ID: ${user.id})`)
+    console.log(`Created user: ${user.email} (ID: ${user.id})`)
     
     // Создаем первую доску с колонками и задачами
-    console.log('📋 Creating board: "Мой первый проект"...')
+    console.log('Creating board: "Мой первый проект"...')
     const board1 = await prisma.board.create({
       data: {
         title: 'Мой первый проект',
@@ -48,7 +48,7 @@ async function main() {
     // Создаем колонки для первой доски (на русском)
     const todoColumn = await prisma.column.create({
       data: {
-        title: '📝 Нужно сделать',
+        title: 'Нужно сделать',
         order: 0,
         boardId: board1.id,
       }
@@ -56,7 +56,7 @@ async function main() {
     
     const inProgressColumn = await prisma.column.create({
       data: {
-        title: '🔄 В процессе',
+        title: 'В процессе',
         order: 1,
         boardId: board1.id,
       }
@@ -64,16 +64,16 @@ async function main() {
     
     const doneColumn = await prisma.column.create({
       data: {
-        title: '✅ Готово',
+        title: 'Готово',
         order: 2,
         boardId: board1.id,
       }
     })
     
-    console.log('✅ Created 3 columns for board 1')
+    console.log('Created 3 columns for board 1')
     
     // Создаем задачи для колонки Нужно сделать
-    console.log('📝 Creating tasks...')
+    console.log('Creating tasks...')
     
     const task1 = await prisma.task.create({
       data: {
@@ -168,7 +168,7 @@ async function main() {
     })
     
     // Создаем вторую доску
-    console.log('📋 Creating board: "Личные задачи"...')
+    console.log('Creating board: "Личные задачи"...')
     const board2 = await prisma.board.create({
       data: {
         title: 'Личные задачи',
@@ -179,7 +179,7 @@ async function main() {
     
     const personalTodo = await prisma.column.create({
       data: {
-        title: '📋 Запланировано',
+        title: 'Запланировано',
         order: 0,
         boardId: board2.id,
       }
@@ -187,7 +187,7 @@ async function main() {
     
     const personalProgress = await prisma.column.create({
       data: {
-        title: '🏃‍♂️ В процессе',
+        title: 'В процессе',
         order: 1,
         boardId: board2.id,
       }
@@ -195,13 +195,13 @@ async function main() {
     
     const personalDone = await prisma.column.create({
       data: {
-        title: '🎉 Выполнено',
+        title: 'Выполнено',
         order: 2,
         boardId: board2.id,
       }
     })
     
-    console.log('✅ Created 3 columns for board 2')
+    console.log('Created 3 columns for board 2')
     
     // Создаем задачи для личной доски
     await prisma.task.createMany({
@@ -251,13 +251,13 @@ async function main() {
       ]
     })
     
-    console.log('✅ Created tasks for board 2')
+    console.log('Created tasks for board 2')
     
     // Создаем третью доску для демонстрации
-    console.log('📋 Creating board: "Идеи для проекта"...')
+    console.log('Creating board: "Идеи для проекта"...')
     const board3 = await prisma.board.create({
       data: {
-        title: '💡 Идеи для проекта',
+        title: 'Идеи для проекта',
         description: 'Что можно добавить в Trello Clone',
         userId: user.id,
       }
@@ -265,7 +265,7 @@ async function main() {
     
     const ideasColumn = await prisma.column.create({
       data: {
-        title: '✨ Идеи',
+        title: 'Идеи',
         order: 0,
         boardId: board3.id,
       }
@@ -273,7 +273,7 @@ async function main() {
     
     const inDevColumn = await prisma.column.create({
       data: {
-        title: '🔨 В разработке',
+        title: 'В разработке',
         order: 1,
         boardId: board3.id,
       }
@@ -281,7 +281,7 @@ async function main() {
     
     const completedColumn = await prisma.column.create({
       data: {
-        title: '🎯 Реализовано',
+        title: 'Реализовано',
         order: 2,
         boardId: board3.id,
       }
@@ -328,28 +328,28 @@ async function main() {
       ]
     })
     
-    console.log('✅ Created board 3 with ideas')
+    console.log('Created board 3 with ideas')
     
-    console.log('✨ Seeding completed successfully!')
+    console.log('Seeding completed successfully!')
     console.log('')
-    console.log('📊 Statistics:')
+    console.log('Statistics:')
     console.log(`   - 1 user created`)
     console.log(`   - 3 boards created`)
     console.log(`   - 9 columns created`)
     console.log(`   - ${await prisma.task.count()} tasks created`)
     console.log(`   - ${await prisma.subtask.count()} subtasks created`)
     console.log('')
-    console.log('📋 Test credentials:')
+    console.log('Test credentials:')
     console.log('   Email: user@example.com')
     console.log('   Password: password123')
     console.log('')
-    console.log('📁 Available boards:')
+    console.log('Available boards:')
     console.log('   1. Мой первый проект (учебный)')
     console.log('   2. Личные задачи')
     console.log('   3. Идеи для проекта')
     
   } catch (error) {
-    console.error('❌ Error during seeding:', error)
+    console.error('Error during seeding:', error)
     throw error
   } finally {
     await prisma.$disconnect()
@@ -358,6 +358,6 @@ async function main() {
 
 main()
   .catch((e) => {
-    console.error('❌ Seeding failed:', e)
+    console.error('Seeding failed:', e)
     process.exit(1)
   })
