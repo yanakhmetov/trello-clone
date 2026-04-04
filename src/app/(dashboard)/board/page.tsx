@@ -15,6 +15,7 @@ export default function BoardsPage() {
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [editingBoard, setEditingBoard] = useState<string | null>(null)
   const [editTitle, setEditTitle] = useState('')
+  const [editDescription, setEditDescription] = useState('')
   const inputRef = useRef<HTMLInputElement>(null)
 
   const fetchBoards = async () => {
@@ -68,9 +69,10 @@ export default function BoardsPage() {
     }
   }
 
-  const startEditing = (boardId: string, currentTitle: string) => {
+  const startEditing = (boardId: string, currentTitle: string, currentDescription: string | null) => {
     setEditingBoard(boardId)
     setEditTitle(currentTitle)
+    setEditDescription(currentDescription || '')
   }
 
   const saveEdit = async (boardId: string) => {
@@ -83,21 +85,28 @@ export default function BoardsPage() {
       const response = await fetch(`/api/boards/${boardId}`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ title: editTitle.trim() }),
+        body: JSON.stringify({ 
+          title: editTitle.trim(),
+          description: editDescription.trim() || null
+        }),
       })
 
       if (response.ok) {
         setBoards(prev => prev.map(board => 
-          board.id === boardId ? { ...board, title: editTitle.trim() } : board
+          board.id === boardId ? { 
+            ...board, 
+            title: editTitle.trim(),
+            description: editDescription.trim() || null
+          } : board
         ))
         router.refresh()
       } else {
         const data = await response.json()
-        alert(data.error || 'Ошибка при переименовании доски')
+        alert(data.error || 'Ошибка при обновлении доски')
       }
     } catch (error) {
       console.error('Error editing board:', error)
-      alert('Ошибка при переименовании доски')
+      alert('Ошибка при обновлении доски')
     } finally {
       setEditingBoard(null)
     }
@@ -155,24 +164,46 @@ export default function BoardsPage() {
             >
               {editingBoard === board.id ? (
                 <div className="bg-white rounded-lg shadow-md p-6">
-                  <input
-                    ref={inputRef}
-                    type="text"
-                    value={editTitle}
-                    onChange={(e) => setEditTitle(e.target.value)}
-                    onBlur={() => saveEdit(board.id)}
-                    onKeyDown={(e) => handleKeyDown(e, board.id)}
-                    className="w-full text-xl font-semibold text-gray-800 border-b-2 border-blue-500 focus:outline-none px-1"
-                  />
-                  {board.description && (
-                    <p className="text-gray-600 mt-4 line-clamp-2">{board.description}</p>
-                  )}
-                  <div className="flex items-center justify-between text-sm text-gray-500 mt-4">
-                    <span>{board.columns.length} колонок</span>
-                    <span>
-                      {board.columns.reduce((acc, col) => acc + col.tasks.length, 0)}{' '}
-                      задач
-                    </span>
+                  <div className="space-y-4">
+                    <div>
+                      <label className="block text-xs font-medium text-gray-500 mb-1 uppercase tracking-wider">
+                        Название
+                      </label>
+                      <input
+                        ref={inputRef}
+                        type="text"
+                        value={editTitle}
+                        onChange={(e) => setEditTitle(e.target.value)}
+                        onKeyDown={(e) => handleKeyDown(e, board.id)}
+                        className="w-full text-xl font-semibold text-gray-800 border-b-2 border-blue-500 focus:outline-none px-1"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-xs font-medium text-gray-500 mb-1 uppercase tracking-wider">
+                        Описание
+                      </label>
+                      <textarea
+                        value={editDescription}
+                        onChange={(e) => setEditDescription(e.target.value)}
+                        placeholder="Добавьте описание..."
+                        rows={3}
+                        className="w-full text-gray-600 text-sm border rounded-md p-2 focus:outline-none focus:ring-1 focus:ring-blue-500 resize-none"
+                      />
+                    </div>
+                    <div className="flex items-center gap-2 justify-end pt-2">
+                      <button
+                        onClick={cancelEdit}
+                        className="px-3 py-1.5 text-sm text-gray-600 hover:bg-gray-100 rounded-md transition"
+                      >
+                        Отмена
+                      </button>
+                      <button
+                        onClick={() => saveEdit(board.id)}
+                        className="px-3 py-1.5 text-sm bg-blue-500 text-white rounded-md hover:bg-blue-600 transition"
+                      >
+                        Сохранить
+                      </button>
+                    </div>
                   </div>
                 </div>
               ) : (
@@ -189,10 +220,10 @@ export default function BoardsPage() {
                         onClick={(e) => {
                           e.preventDefault()
                           e.stopPropagation()
-                          startEditing(board.id, board.title)
+                          startEditing(board.id, board.title, board.description)
                         }}
                         className="p-1.5 hover:bg-gray-100 rounded-lg transition"
-                        title="Переименовать"
+                        title="Редактировать"
                       >
                         <Edit2 className="w-4 h-4 text-gray-500" />
                       </button>
