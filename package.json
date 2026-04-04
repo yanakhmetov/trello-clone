@@ -20,7 +20,8 @@
     "docker:prod:up": "docker-compose -f docker-compose.prod.yml --env-file .env.docker.production up -d",
     "docker:prod:down": "docker-compose -f docker-compose.prod.yml down",
     "docker:seed": "docker exec -it trello-app npx prisma db seed",
-    "docker:migrate": "docker exec -it trello-app npx prisma migrate dev --name init"
+    "docker:migrate": "docker exec -it trello-app npx prisma migrate dev --name init",
+    "postinstall": "prisma generate"
   },
   "dependencies": {
     "@auth/prisma-adapter": "^2.11.1",
