@@ -47,7 +47,7 @@
 ### Frontend
 - **Framework**: [Next.js 16 (App Router)](https://nextjs.org/)
 - **Library**: [React 19](https://react.dev/)
-- **Styling**: [Tailwind CSS 4](https://tailwindcss.com/)
+- **Styling**: [Tailwind CSS](https://tailwindcss.com/)
 - **Icons**: [Lucide React](https://lucide.dev/)
 - **Drag & Drop**: [@dnd-kit](https://dndkit.com/)
 - **State/Caching**: [TanStack Query v5](https://tanstack.com/query)
